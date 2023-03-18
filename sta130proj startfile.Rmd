@@ -21,7 +21,10 @@ library(tidyverse)
 library(rhdf5)
 header <- h5ls("STA130_APOGEE.h5")
 wavelength <- "STA130_APOGEE.h5" %>% h5read("wavelength") %>% as_tibble()
-wavelength
+# wavelength
+spectra <- "STA130_APOGEE.h5" %>% h5read("spectra", index=list(NULL, 1:100)) %>% t() %>% as_tibble()
+feh <- "STA130_APOGEE.h5" %>% h5read("fe_h") %>% as_tibble()
+ggplot(data=feh) + aes(x=value) + geom_histogram()
 ```
 
 
