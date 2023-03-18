@@ -10,9 +10,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
 library(tidyverse)
@@ -21,12 +18,13 @@ library(tidyverse)
 library(rhdf5)
 header <- h5ls("STA130_APOGEE.h5")
 wavelength <- "STA130_APOGEE.h5" %>% h5read("wavelength") %>% as_tibble()
-# wavelength
-spectra <- "STA130_APOGEE.h5" %>% h5read("spectra", index=list(NULL, 1:100)) %>% t() %>% as_tibble()
-feh <- "STA130_APOGEE.h5" %>% h5read("fe_h") %>% as_tibble()
+wavelength
 ggplot(data=feh) + aes(x=value) + geom_histogram()
 ```
 
-
+```{r}
+glimpse(header)
+```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
