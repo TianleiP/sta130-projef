@@ -85,6 +85,7 @@ df3 %>% ggplot(aes(x = loggra, y = ca_al_abundance_interact)) +
 ```
 
 ```{r}
+#this is the new linear regression analyze and visualization of heavy elements respectively
 df4 = data.frame(loggra, cah = cah$value, alh = alh$value, mgh = mgh$value, feh = feh$value)
 
 lm(loggra ~ mgh, data = df4) %>% summary
