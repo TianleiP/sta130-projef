@@ -66,5 +66,15 @@ mgh_abundance <- mgh %>% mutate(abundance = case_when(value < 0 ~ 0, value >= 0 
 
 model3 <- lm(loggra ~ feh_abundance$abundance + cah_abundance$abundance + alh_abundance$abundance + mgh_abundance$abundance, data = df) %>% summary
 model3
+
+df3 <- data.frame(loggra, ca_al_abundance_interact = cah$value + alh$value)
+df3
+df3 %>% ggplot(aes(x = loggra, y = ca_al_abundance_interact)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+
 ```
 
