@@ -39,14 +39,32 @@ ggplot() + aes(x=effective_temp$value, y=logg_gravity$value) + geom_bin_2d(bins=
 
 ```{r}
 # this is the linear regression analyze of our second research problem
-et = "STA130_APOGEE.h5" %>% h5read("logg")
-loggra = "STA130_APOGEE.h5" %>% h5read("teff")
-df <- data.frame(et, loggra)
-model <- lm(loggra ~ et, data = df) %>% summary
-ggplot(df, aes(x = et, y = loggra)) +
+et = "STA130_APOGEE.h5" %>% h5read("teff")
+loggra = "STA130_APOGEE.h5" %>% h5read("logg")
+df <- data.frame(loggra, et)
+model <- lm(et ~ loggra, data = df) %>% summary
+ggplot(df, aes(x = loggra, y = et)) +
   geom_point() +
   geom_smooth(method = "lm")
 df
 model
+```
+
+```{r}
+# this is multilinear regression analyze of question 3
+feh <- "STA130_APOGEE.h5" %>% h5read("fe_h") %>% as_tibble() 
+feh_abundance <- feh %>% mutate(abundance = case_when(value < 0 ~ 0, value >= 0 ~ 1))
+
+cah <- "STA130_APOGEE.h5" %>% h5read("ca_h") %>% as_tibble() 
+cah_abundance <- cah %>% mutate(abundance = case_when(value < 0 ~ 0, value >= 0 ~ 1))
+
+alh <- "STA130_APOGEE.h5" %>% h5read("al_h") %>% as_tibble() 
+alh_abundance <- alh %>% mutate(abundance = case_when(value < 0 ~ 0, value >= 0 ~ 1))
+
+mgh <- "STA130_APOGEE.h5" %>% h5read("mg_h") %>% as_tibble() 
+mgh_abundance <- mgh %>% mutate(abundance = case_when(value < 0 ~ 0, value >= 0 ~ 1))
+
+model3 <- lm(loggra ~ feh_abundance$abundance + cah_abundance$abundance + alh_abundance$abundance + mgh_abundance$abundance, data = df) %>% summary
+model3
 ```
 
