@@ -110,3 +110,19 @@ df4 %>% ggplot(aes(x = loggra, y = cah)) +
 
 ```
 
+```{r}
+df4 %>% summarise(correlationfeh = 
+                              cor(loggra, feh))
+df4 %>% summarise(correlationcah = 
+                              cor(loggra, cah))
+df4 %>% summarise(correlationmgh = 
+                              cor(loggra, mgh))
+df4 %>% summarise(correlationalh = 
+                              cor(loggra, alh))
+```
+```{r}
+summary(lm(feh ~ loggra, data = df4))
+summary(lm(cah ~ loggra, data = df4))
+summary(lm(mgh ~ loggra, data = df4))
+summary(lm(alh ~ loggra, data = df4))
+```
