@@ -34,6 +34,7 @@ glimpse(header)
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 
+
 ```{r}
 # test a simple visualization from two tibble we are focusing on
 effective_temp <- "STA130_APOGEE.h5" %>% h5read("teff") %>% as_tibble()
@@ -42,6 +43,20 @@ ggplot() + aes(x=effective_temp$value, y=logg_gravity$value) + geom_bin_2d(bins=
 ```
 
 ```{r}
+
+# this is the first visualization of our first research quesiton
+df0 <- data.frame(cah_abundance, et)#two variables are defined below
+lm(et ~ abundance, data = df0) %>% summary
+
+ggplot(df0, aes(x = abundance, y = et)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+
+```{r}
+
+
 # this is the linear regression analyze of our second research problem
 et = "STA130_APOGEE.h5" %>% h5read("teff")
 loggra = "STA130_APOGEE.h5" %>% h5read("logg")
@@ -85,7 +100,9 @@ df3 %>% ggplot(aes(x = loggra, y = ca_al_abundance_interact)) +
 ```
 
 ```{r}
+
 #this is the new linear regression analyze and visualization of heavy elements respectively
+
 df4 = data.frame(loggra, cah = cah$value, alh = alh$value, mgh = mgh$value, feh = feh$value)
 
 lm(loggra ~ mgh, data = df4) %>% summary
