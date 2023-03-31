@@ -189,19 +189,11 @@ test_sta_r2
 
 ```{r}
 # this is the analyze of question 3
+#load data
 feh <- "STA130_APOGEE.h5" %>% h5read("fe_h") %>% as_tibble() 
-feh_abundance <- feh %>% mutate(abundance = case_when(value < 0 ~ 0, value >= 0 ~ 1))
-
 cah_tibble <- "STA130_APOGEE.h5" %>% h5read("ca_h") %>% as_tibble() 
-cah_abundance <- cah_tibble %>% mutate(abundance = case_when(value < 0 ~ 0, value >= 0 ~ 1))
-
 alh <- "STA130_APOGEE.h5" %>% h5read("al_h") %>% as_tibble() 
-alh_abundance <- alh %>% mutate(abundance = case_when(value < 0 ~ 0, value >= 0 ~ 1))
-
 mgh <- "STA130_APOGEE.h5" %>% h5read("mg_h") %>% as_tibble() 
-mgh_abundance <- mgh %>% mutate(abundance = case_when(value < 0 ~ 0, value >= 0 ~ 1))
-
-
 ```
 
 ```{r}
@@ -214,23 +206,29 @@ lm(loggra ~ mgh, data = df4) %>% summary
 lm(loggra ~ feh, data = df4) %>% summary
 lm(loggra ~ alh, data = df4) %>% summary
 lm(loggra ~ cah, data = df4) %>% summary
-df4 %>% ggplot(aes(x = loggra, y = mgh)) +
+
+```
+```{r}
+#four scatter plot visualization
+df4 %>% ggplot(aes(x = mgh, y = loggra)) +
   geom_point() +
   geom_smooth(method = "lm")
 
-df4 %>% ggplot(aes(x = loggra, y = feh)) +
+df4 %>% ggplot(aes(x = feh, y = loggra)) +
   geom_point() +
   geom_smooth(method = "lm")
 
-df4 %>% ggplot(aes(x = loggra, y = alh)) +
+df4 %>% ggplot(aes(x = alh, y = loggra)) +
   geom_point() +
   geom_smooth(method = "lm")
 
-df4 %>% ggplot(aes(x = loggra, y = cah)) +
+df4 %>% ggplot(aes(x = cah, y = loggra)) +
   geom_point() +
   geom_smooth(method = "lm")
 
 ```
+
+
 
 ```{r}
 df4 %>% summarise(correlationfeh =
