@@ -1,8 +1,11 @@
 ---
 title: "sta130proj"
 output:
-  pdf_document: default
+  pdf_document:
+    latex_engine: pdflatex
   html_document: default
+fontsize: 12pt
+linespacing: 1
 date: "2023-03-18"
 ---
 
@@ -15,21 +18,21 @@ knitr::opts_chunk$set(echo = TRUE)
 ## R Markdown
 
 
-```{r cars}
+```{r, message=FALSE, echo=FALSE}
 library(rpart)
 library(tidyverse)
 library(partykit)
 ```
 
-```{r}
+```{r, echo=FALSE}
 # load basic data
 library(rhdf5)
 header <- h5ls("STA130_APOGEE.h5")
 header
 ```
 
-```{r}
-et = "STA130_APOGEE.h5" %>% h5read("ca_uh")
+```{r, echo=FALSE}
+et = "STA130_APOGEE.h5" %>% h5read("ca_h")
 
 ```
 
@@ -55,7 +58,7 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 *P-value result interpretation*
 *Our calculated p value is 0, which is very small. Our calculated p-value is not necessary the same as the actual p-value, but this implies that a 22 degree celsius difference in mean effective temperature did not happened within 1000 times of random sampling. Thus, the actual p-value must be very small. Since our p-value is definitely smaller than the significant level of 0.05, we reject the $H_{0}$ state the stellar with positive [Ca/H]($\text{ch}{1}$) generally have same effective temperatures to the stellar with negative [Ca/H] values($\text{ch}{2}$), which means though the permutation test, we support the $\text{ch}{1}$, which the temperature of stellar with positive [Ca/H]($\text{ch}{1}$) generally have different effective temperatures to the stellar with negative [Ca/H] values($\text{ch}{2}$).*
 
-```{r}
+```{r, echo=FALSE}
 
 # this is the first visualization of our first research quesiton
 cah <- "STA130_APOGEE.h5" %>% h5read("ca_h")
@@ -83,13 +86,13 @@ for(i in 1:1000){
 }
 sim_tibble = simulated_values %>% as_tibble()
 sim_tibble
-ggplot(data = sim_tibble, aes(x = value)) + geom_histogram()
+ggplot(data = sim_tibble, aes(x = value)) + geom_histogram()+ labs(x="Difference of sample mean effctive tempreature of postive cah and negative cah stellar")
 
 p = sum(abs(simulated_values) >= abs(test_stats))/1000
 p
 ```
 
-```{r}
+```{r, echo=FALSE}
 cah_mutated =cah_et_tibble %>% mutate(boolean = case_when(cah > 0 ~ "cah>0", cah <= 0 ~ "cah<=0"))%>%group_by(boolean)
 cah_mutated %>%
   ggplot(aes(x = boolean, y = et)) +
@@ -98,7 +101,7 @@ cah_mutated %>%
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 
 
 Al_h <- "STA130_APOGEE.h5" %>% h5read("al_h")
@@ -139,7 +142,7 @@ p
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 
 
 # this is the linear regression analyze of our second research problem
@@ -150,11 +153,15 @@ df <- data.frame(loggra, et)
 model <- lm(et ~ loggra, data = df) %>% summary
 ggplot(df, aes(x = loggra, y = et)) +
   geom_point() +
-  geom_smooth(method = "lm")
+  geom_smooth(method = "lm")+ labs(x="log base 10 gravity of stellar", y="effctive temperature of stellar(celcius degree)")
 
 model
+correnum <- df %>% summarise(correlation = 
+                              cor(et, loggra))
+correnum
 ```
-```{r}
+
+```{r, echo=FALSE}
 mean_gra = mean(loggra)
 etgra_tibble <- df %>% as_tibble()
 lowetgroup <- etgra_tibble %>% filter(loggra >= mean_gra)
@@ -181,13 +188,13 @@ p = sum(abs(simulated_values_r2) >= abs(test_sta_r2))/1000
 p
 ```
 
-```{r}
+```{r, echo=FALSE}
 test_sta_r2
 ```
 
 
 
-```{r}
+```{r, echo=FALSE}
 # this is the analyze of question 3
 #load data
 feh <- "STA130_APOGEE.h5" %>% h5read("fe_h") %>% as_tibble() 
@@ -196,7 +203,7 @@ alh <- "STA130_APOGEE.h5" %>% h5read("al_h") %>% as_tibble()
 mgh <- "STA130_APOGEE.h5" %>% h5read("mg_h") %>% as_tibble() 
 ```
 
-```{r}
+```{r, echo=FALSE}
 
 #this is the new linear regression analyze and visualization of heavy elements respectively
 
@@ -208,7 +215,7 @@ lm(loggra ~ alh, data = df4) %>% summary
 lm(loggra ~ cah, data = df4) %>% summary
 
 ```
-```{r}
+```{r, echo=FALSE}
 #four scatter plot visualization
 df4 %>% ggplot(aes(x = mgh, y = loggra)) +
   geom_point() +
@@ -230,7 +237,7 @@ df4 %>% ggplot(aes(x = cah, y = loggra)) +
 
 
 
-```{r}
+```{r, echo=FALSE}
 df4 %>% summarise(correlationfeh =
                               cor(loggra, feh))
 df4 %>% summarise(correlationcah = cor(loggra, cah))
@@ -242,7 +249,7 @@ df4 %>% summarise(correlationalh =
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 set.seed(130)  # required to ensure reproducibility
 mean_gra2 = mean(df4$loggra)
 new_df4 <- df4 %>% mutate(gra_catogory = ifelse(loggra >= mean_gra2, 'high', 'low')) %>% mutate(sum_heavyelement = cah + mgh + alh + feh)
@@ -250,13 +257,13 @@ tree1 <- rpart(gra_catogory ~ sum_heavyelement, data = new_df4)
 plot(as.party(tree1), type="simple", gp=gpar(cex=0.5))
 ```
 
-```{r}
+```{r, echo=FALSE}
 tree1pre = predict(tree1, newdata = new_df4) %>% as_tibble() %>% mutate(prediction = ifelse(high >= 0.5, 'predict high','predict low'))
 cm = table(tree1pre$prediction, new_df4$gra_catogory)
 cm
 ```
 
-```{r}
+```{r, echo=FALSE}
 precision <- cm[1, 1] / sum(cm[1,])
 recall <- cm[1, 1] / sum(cm[,1])
 accuracy <- sum(diag(cm)) / sum(cm)
